@@ -42,5 +42,8 @@ app.post('/predict', async function (req, res) {
     res.send(result);
 });
 
-app.listen(8080);
+// app.listen(8080);
+app.listen(process.env.PORT || 8080, function(){
+    console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+  });
 console.log('Server is listening on port 8080');
