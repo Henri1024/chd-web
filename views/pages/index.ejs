@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('../partials/head'); %>
+</head>
+
+<body>
+
+  <script>
+    $(document).ready(function () {
+      $('input[type=radio]').click(function () {
+        if (this.id == "form-is-smoking-yes") {
+          $('#form-num-of-cigs').val('');
+          $('#form-num-of-cigs').removeAttr('disabled');
+          $('#form-num-of-cigs').attr("required");
+        }
+      });
+
+
+      $('input[type=radio]').click(function () {
+        if (this.id == "form-is-smoking-no") {
+          $('#form-num-of-cigs').attr("required", "");
+          $('#form-num-of-cigs').val('');
+          $('#form-num-of-cigs').attr('disabled', 'disabled');
+        }
+      });
+
+
+      $("#main-prediction-form").submit(function (e) {
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+
+        if ($('input[type=radio][name=form-gender]:checked').length == 0) {
+          alert("Gender is required");
+          return false;
+        }
+
+        if ($('input[type=radio][name=form-is-consume-bpmed]:checked').length == 0) {
+          alert("Consume Blood Pressure Medicine is required");
+          return false;
+        }
+
+        if ($('input[type=radio][name=form-is-prevalent-stroke]:checked').length == 0) {
+          alert("Have Stroke History is required");
+          return false;
+        }
+
+        if ($('input[type=radio][name=form-is-prevalent-hypertension]:checked').length == 0) {
+          alert("Have Hypertension History is required");
+          return false;
+        }
+
+        if ($('input[type=radio][name=form-is-prevalent-diabetes]:checked').length == 0) {
+          alert("Have Diabetes History is required");
+          return false;
+        }
+
+        if ($('input[type=radio][name=form-is-smoking]:checked').length == 0) {
+          alert("Is Smoker is required");
+          return false;
+        }
+
+        var body = {
+          age: parseFloat($("#form-age").val()),
+          sex: parseFloat($("input[type='radio'][name='form-gender']:checked").val()),
+          is_smoking: parseFloat($("input[type='radio'][name='form-is-smoking']:checked").val()),
+          cigs_per_day: parseFloat($("#form-num-of-cigs").val() ? $("#form-num-of-cigs").val() : "0"),
+          blood_pressure_med_consumption: parseFloat($("input[type='radio'][name='form-is-consume-bpmed']:checked").val()),
+          prevalent_stroke: parseFloat($("input[type='radio'][name='form-is-prevalent-stroke']:checked").val()),
+          prevalent_hypertension: parseFloat($("input[type='radio'][name='form-is-prevalent-hypertension']:checked").val()),
+          cholesterol_levels: parseFloat($("#form-cholesterol-level").val()),
+          prevalent_diabetes: parseFloat($("input[type='radio'][name='form-is-prevalent-diabetes']:checked").val()),
+          systolic_blood_pressure: parseFloat($("#form-sistolic-bp").val()),
+          diastolic_blood_pressure: parseFloat($("#form-diastolic-bp").val()),
+          body_mass_index: parseFloat(parseFloat(calculateBMI()).toFixed(2)),
+          heart_rate: parseFloat($("#form-heart-rate").val()),
+          glucose_levels: parseFloat($("#form-glucose-level").val()),
+        };
+
+
+        $.ajax({
+          type: "POST",
+          url: "/predict",
+          data: JSON.stringify(body),
+          dataType: "json",
+          contentType: 'application/json',
+          encode: true,
+          success: function (data, textStatus, xhr) {
+            var pred = data['prediction']
+            var res_sigmoid = data['probability']
+            
+            // check data pred id Nan
+            if (isNaN(pred)) {
+              alert("Failed to predict, please try again");
+              return false;
+            }
+
+            if (pred == '1') {
+              // $('#result-modal-description-true').text('YOU WILL DEATH TOMORROW');
+              $('#result-modal-description-true').text('This data classified as more likely diagnose Coronary Heart Disease with ' + floatToPercentage(parseFloat(res_sigmoid)) + ' confidence.');
+              $("#result-modal-diagnosed").modal('show');
+            } else {
+              $('#result-modal-description-false').text('This data classified as more likely not diagnose Coronary Heart Disease ' + floatToPercentage(1-parseFloat(res_sigmoid)) + ' confidence.');
+              $("#result-modal-safe").modal('show');
+            }
+          },
+          fail: function (xhr, textStatus, errorThrown) {
+            alert('failed to process input');
+          }
+        })
+
+
+      });
+    });
+
+    function calculateBMI() {
+      var height = $("#form-height").val();
+      var weight = $("#form-weight").val();
+
+
+      var bmi = weight / (height / 100 * height / 100);
+      return bmi;
+    }
+
+    function floatToPercentage(num) {
+      return (num * 100).toFixed(2) + '%';
+    }
+
+    function clearForm() {
+
+      $('#form-gender-male').prop('checked', false);
+      $('#form-gender-female').prop('checked', false);
+
+      $('#form-is-consume-bpmed-yes').prop('checked', false);
+      $('#form-is-consume-bpmed-no').prop('checked', false);
+
+      $('#form-is-prevalent-stroke-yes').prop('checked', false);
+      $('#form-is-prevalent-stroke-no').prop('checked', false);
+
+
+      $('#form-is-prevalent-hypertension-yes').prop('checked', false);
+      $('#form-is-prevalent-hypertension-no').prop('checked', false);
+
+      $('#form-is-prevalent-diabetes-yes').prop('checked', false);
+      $('#form-is-prevalent-diabetes-no').prop('checked', false);
+
+      $('#form-is-smoking-yes').prop('checked', false);
+      $('#form-is-smoking-no').prop('checked', false);
+
+      $('#form-num-of-cigs').val('');
+
+      $('#form-num-of-cigs').attr('disabled', 'disabled');
+
+      $('#form-cholesterol-level').val('');
+
+      $('#form-sistolic-bp').val('');
+
+      $('#form-diastolic-bp').val('');
+
+      $('#form-glucose-level').val('');
+
+      $('#form-heart-rate').val('');
+
+      $('#form-height').val('');
+
+      $('#form-weight').val('');
+
+      $('#form-age').val('');
+    }
+  </script>
+
+  <header>
+    <%- include('../partials/header'); %>
+  </header>
+
+  <div class="container">
+    <main>
+
+      <h4 class="pt-3 text-center pb-2 font-weight-bold">Fill Form Bellow To Classify CHD Potential</h4>
+
+      <form id="main-prediction-form">
+
+        <div class="form-group row">
+
+          <label for="form-gender" class="col-sm-4 font-weight-bold">Gender : </label>
+          <div class="col-sm-7 mx-3">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="form-gender" id="form-gender-male" value="1">
+              <label class="form-check-label mr-5" for="form-gender-male">Male</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="form-gender" id="form-gender-female" value="0">
+              <label class="form-check-label" for="form-gender-female">Female</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="form-is-consume-bpmed" class="col-sm-4 font-weight-bold">Consume Blood Pressure Medicine :
+          </label>
+          <div class="col-sm-7 mx-3">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="form-is-consume-bpmed" id="form-is-consume-bpmed-yes"
+                value="1">
+              <label class="form-check-label mr-5" for="form-is-consume-bpmed-yes">Yes</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="form-is-consume-bpmed" id="form-is-consume-bpmed-no"
+                value="0">
+              <label class="form-check-label" for="form-is-consume-bpmed-no">No</label>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="form-group row">
+          <label for="form-is-prevalent-stroke" class="col-sm-4 font-weight-bold">Have Stroke History : </label>
+          <div class="col-sm-7 mx-3 mx-3">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="form-is-prevalent-stroke"
+                id="form-is-prevalent-stroke-yes" value="1">
+              <label class="form-check-label mr-5" for="form-is-prevalent-stroke-yes">Yes</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="form-is-prevalent-stroke"
+                id="form-is-prevalent-stroke-no" value="0">
+              <label class="form-check-label" for="form-is-prevalent-stroke-no">No</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="form-is-prevalent-hypertension" class="col-sm-4 font-weight-bold">Have Hypertension History :
+          </label>
+          <div class="col-sm-7 mx-3">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="form-is-prevalent-hypertension"
+                id="form-is-prevalent-hypertension-yes" value="1">
+              <label class="form-check-label mr-5" for="form-is-prevalent-hypertension-yes">Yes</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="form-is-prevalent-hypertension"
+                id="form-is-prevalent-hypertension-no" value="0">
+              <label class="form-check-label" for="form-is-prevalent-hypertension-no">No</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="form-is-prevalent-diabetes" class="col-sm-4 font-weight-bold">Have Diabetes History : </label>
+          <div class="col-sm-7 mx-3">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="form-is-prevalent-diabetes"
+                id="form-is-prevalent-diabetes-yes" value="1">
+              <label class="form-check-label mr-5" for="form-is-prevalent-diabetes-yes">Yes</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="form-is-prevalent-diabetes"
+                id="form-is-prevalent-diabetes-no" value="0">
+              <label class="form-check-label" for="form-is-prevalent-diabetes-no">No</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="form-is-smoking" class="col-sm-4 font-weight-bold">Is Smoker : </label>
+          <div class="col-sm-7 mx-3">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="form-is-smoking" id="form-is-smoking-yes" value="1">
+              <label class="form-check-label mr-5" for="form-is-smoking-yes">Yes</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="form-is-smoking" id="form-is-smoking-no" value="0">
+              <label class="form-check-label" for="form-is-smoking-no">No</label>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="form-group row">
+            <label for="form-num-of-cigs" class="col-sm-4 font-weight-bold">Average Cigs Per Day (pcs) : </label>
+            <input name="form-num-of-cigs" type="number" class="form-control col-sm-7 mx-3" id="form-num-of-cigs"
+              placeholder="Enter Your Average Cigs Per Day" disabled>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="form-cholesterol-level" class="col-sm-4 font-weight-bold">LDL Cholesterol Level (mg/dL) : </label>
+          <input name="form-cholesterol-level" type="number" class="form-control col-sm-7 mx-3"
+            id="form-cholesterol-level" placeholder="Enter Your Cholesterol Level" required>
+        </div>
+
+        <div class="form-group row">
+          <label for="form-sistolic-bp" class="col-sm-4 font-weight-bold">Sistolic Blood Pressure Level (mmHg) : </label>
+          <input name="form-sistolic-bp" type="number" class="form-control col-sm-7 mx-3" id="form-sistolic-bp"
+            placeholder="Enter Your Sistolic Blood Pressure Level" required>
+        </div>
+
+        <div class="form-group row">
+          <label for="form-diastolic-bp" class="col-sm-4 font-weight-bold">Diastolic Blood Pressure Level (mmHg) : </label>
+          <input name="form-diastolic-bp" type="number" class="form-control col-sm-7 mx-3" id="form-diastolic-bp"
+            placeholder="Enter Your Diatolic Blood Pressure Level" required>
+        </div>
+
+        <div class="form-group row">
+          <label for="form-glucose-level" class="col-sm-4 font-weight-bold">Glucode Level (mg/dL) : </label>
+          <input name="form-glucose-level" type="number" class="form-control col-sm-7 mx-3" id="form-glucose-level"
+            placeholder="Enter Your Glucose Level" required>
+        </div>
+
+        <div class="form-group row">
+          <label for="form-heart-rate" class="col-sm-4 font-weight-bold">Heart Rate (bpm) : </label>
+          <input name="form-heart-rate" type="number" class="form-control col-sm-7 mx-3" id="form-heart-rate"
+            placeholder="Enter Your Heart Rate" required>
+        </div>
+
+        <div class="form-group row">
+          <label for="form-height" class="col-sm-4 font-weight-bold">Height (cm) : </label>
+          <input name="form-height" type="number" class="form-control col-sm-7 mx-3" id="form-height"
+            placeholder="Enter Your Height" required>
+        </div>
+
+        <div class="form-group row">
+          <label for="form-weight" class="col-sm-4 font-weight-bold">Weight (kg) : </label>
+          <input name="form-weight" type="number" class="form-control col-sm-7 mx-3" id="form-weight"
+            placeholder="Enter Your Weight" required>
+        </div>
+
+        <div class="form-group row">
+          <label for="form-age" class="col-sm-4 font-weight-bold">Age : </label>
+          <input name="form-age" type="number" class="form-control col-sm-7 mx-3" id="form-age"
+            placeholder="Enter Your Age" required>
+        </div>
+
+
+        <div class="form-group text-center m-3">
+          <button type="button" class="btn btn-light mr-5 px-4" data-toggle="modal"
+            data-target="#clear-form-modal">Clear</button>
+          <button type="submit" class="btn btn-submit btn-primary ml-5 px-4">Submit</button>
+        </div>
+      </form>
+
+      <!-- Confirmation Clear Form Modal -->
+      <div class="modal fade" id="clear-form-modal" tabindex="-1" role="dialog" aria-labelledby="clear-form-modal-label"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="clear-form-modal-label">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Are you sure you want to clear the form?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="btn-clear-form" onclick="clearForm()"
+                data-dismiss="modal"> Clear Form</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- modal result prediction -->
+      <div class="modal fade" id="result-modal-safe" tabindex="-1" role="dialog" aria-labelledby="result-modal-label"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header" style="background-color: lightgreen;">
+              <h5 class="modal-title" id="result-modal-label">Result Prediction</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="result-modal-description-false">
+              Are you sure you want to clear the form?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- modal result prediction -->
+      <div class="modal fade" id="result-modal-diagnosed" tabindex="-1" role="dialog"
+        aria-labelledby="result-modal-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header" style="background-color: #ff8063;">
+              <h5 class="modal-title" id="result-modal-label">Result Prediction</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="result-modal-description-true">
+              Are you sure you want to clear the form?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+
+
+  <footer>
+    <%- include('../partials/footer'); %>
+  </footer>
+
+</body>
+
+</html>
