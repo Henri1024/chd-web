@@ -81,7 +81,7 @@
 
         $.ajax({
           type: "POST",
-          url: "/predict",
+          url: "/admin/predict",
           data: JSON.stringify(body),
           dataType: "json",
           contentType: 'application/json',
@@ -171,7 +171,7 @@
   </script>
 
   <header>
-    <%- include('../partials/header'); %>
+    <%- include('../partials/header_admin'); %>
   </header>
 
   <div class="container">
