@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('../partials/head'); %>
+</head>
+
+<body>
+  <script type="text/javascript" src="/js/jquery.csvToTable.js"></script>
+
+  <script>
+    $(function () {
+      loadCsvToTable('');
+    });
+
+    $(document).ready(function () {
+      $('#checkbox-display-csv').change(function () {
+        if ($('#checkbox-display-csv').is(':checked')) {
+          $('#csv-table').show();
+        } else {
+          $('#csv-table').hide();
+        }
+      });
+
+      $('#checkbox-use-provided-dataset').change(function () {
+        if ($('#checkbox-use-provided-dataset').is(':checked')) {
+          loadCsvToTable('/csv/sample.csv');
+          $('th').addClass('mx-2')
+
+          $('#user-csv-input').val(null);
+
+        }
+      });
+
+      $('#main-prediction-form').submit(function (e) {
+
+        e.preventDefault();
+        var body = {
+          split_rate_training_testing: $('#form-split-rate-training-testing').val(),
+          split_rate_training_val: $('#form-split-rate-training-val').val(),
+          hidden_layer: $('#form-hidden-layer').val(),
+          learning_rate: $('#form-learning-rate').val(),
+          random_state: 128,
+          batch_size: 32
+        }
+        $.ajax({
+          url: '/admin/train',
+          type: 'POST',
+          data: JSON.stringify(body),
+          dataType: "json",
+          contentType: 'application/json',
+          encode: true,
+          success: function (data) {
+            // console.log(type(data))
+            data = JSON.parse(JSON.stringify(data))
+            console.log(typeof (data))
+            console.log(data)
+            alert('Sukses melakukan training  dengan hasil : \nAccuracy : ' + data['message']['accuracy'].toFixed(2) + '\nRecall : ' + data['message']['recall'].toFixed(2) + '\nPrecision : ' + data['message']['precision'].toFixed(2));
+          },
+          fail: function (data) {
+            alert('Gagal Melakukan training dengan data yang disediakan');
+          }
+        });
+      });
+
+    });
+
+    function loadCsvToTable(source) {
+      if (source == '') {
+        $('#csv-table').CSVToTable('/csv/sample.csv');
+        $('th').addClass('mx-2')
+      } else {
+        $('#csv-table').CSVToTable(source);
+      }
+    }
+
+  </script>
+
+  <header>
+    <%- include('../partials/header_admin'); %>
+  </header>
+
+
+  <main>
+
+    <div class="container">
+      <h4 class="pt-3 text-center pb-2 font-weight-bold">Lakukan Pelatihan Dengan Dataset Anda</h4>
+
+      <form id="main-prediction-form">
+
+        <div class="form-group">
+          <label for="form-split-rate-training-testing" class="col-sm-4 font-weight-bold">Split Testing - Training Ratio
+            :
+          </label>
+          <input name="form-split-rate-training-testing" step="0.01" type="number" class="form-control col-sm-7 mx-3"
+            id="form-split-rate-training-testing" placeholder="masukan nilai split ratio yang diinginkan" required>
+        </div>
+
+        <div class="form-group">
+          <label for="form-split-rate-training-val" class="col-sm-4 font-weight-bold">Split Validation - Training Ratio
+            :
+          </label>
+          <input name="form-split-rate-training-val" step="0.01" type="number" class="form-control col-sm-7 mx-3"
+            id="form-split-rate-training-val" placeholder="masukan nilai split ratio yang diinginkan" required>
+        </div>
+
+        <div class="form-group">
+          <label for="form-learning-rate" class="col-sm-4 font-weight-bold">Learning Rate : </label>
+          <input name="form-learning-rate" step="0.00001" type="number" class="form-control col-sm-7 mx-3"
+            id="form-learning-rate" placeholder="masukan nilai learning rate yang diinginkan" required>
+        </div>
+
+        <div class="form-group">
+          <label for="form-hidden-layer" class="col-sm-4 font-weight-bold">Hidden Layer (pisahkan antar layer dengan
+            koma): </label>
+          <input name="form-hidden-layer" type="text" class="form-control col-sm-7 mx-3" id="form-hidden-layer"
+            placeholder="masukan nilai hidden layer yang diinginkan" required>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" id="checkbox-display-csv" checked>
+          <label class="form-check-label" for="checkbox-display-csv">
+            Tampilkan CSV
+          </label>
+        </div>
+
+        <div class="form-group text-center m-3">
+          <button type="submit" class="btn btn-submit btn-primary ml-5 px-4">Submit</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="container">
+
+      <div id="csv-table"></div>
+
+    </div>
+
+  </main>
+
+
+
+
+  <footer>
+    <%- include('../partials/footer'); %>
+  </footer>
+
+</body>
+
+</html>

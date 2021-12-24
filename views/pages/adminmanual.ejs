@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('../partials/head'); %>
+</head>
+
+<body>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.js"></script>
+
+  <script>
+
+
+
+  </script>
+
+  <header>
+    <%- include('../partials/header_admin'); %>
+  </header>
+
+  <div class="container" style="margin: auto;">
+    <main>
+
+      <h4 class="text-center mt-3 font-weight-bold">Cara Pengunaan Aplikasi (Untuk Admin)</h4>
+
+      <p>
+        <tab1>
+          Aplikasi ini dibangun juga untuk melakukan pelatihan ulang model Back Propagation Neural Network yang telah
+          dibangun serta melakukan pengujian terhadap model baru. penulis telah menyediakan dataset yang telah melalui
+          proses sampling sehingga dataset yang tersedia telah siap diproses. pengguna dapat memasukan jumlah split
+          ratio training-validation-testing, learning rate dan jumlah hidden layer beserta jumlah node per hidden
+          layernya
+        </tab1>
+      </p>
+      <span>
+        <p></p>
+      </span>
+
+      <h5 class="my-3 font-weight-bold font-weight-bold">Input yang dibutuhkan</h5>
+      <span>
+        <h6 class="font-weight-bold">1. Split Testing - Training Ratio</h6>
+        <p>
+          <tab1>
+            form ini merupakan form input decimal yang menerima perbandingan jumlah data testing terhadap data training
+          </tab1>
+        </p>
+      </span>
+
+      <span>
+        <h6 class="font-weight-bold">2. Split Validation - Training Ratio</h6>
+        <p>
+          <tab1>
+            form ini merupakan form input decimal yang menerima perbandingan jumlah data Validation terhadap data
+            training setelah dipisahkan dari data testing
+          </tab1>
+        </p>
+      </span>
+
+      <span>
+        <h6 class="font-weight-bold">3. Learning Rate</h6>
+        <p>
+          <tab1>
+            Learning rate adalah laju pembelajaran pada fungsi optimizer yang digunakan
+          </tab1>
+        </p>
+      </span>
+
+      <span>
+        <h6 class="font-weight-bold">4. Hidden Layer</h6>
+        <p>
+          <tab1>
+            form hidden layer berisi input text yang akan menerima jumlah hidden layer dan node per hidden layer yang
+            diinginkan, pengguna dapat menentukan jumlah hidden layer yang diinginkan dengan memisahkannya dengan tanda
+            koma (,). sebagai contoh apabila pengguna ingin menambah 2 hidden layer dengan masing-masing 128 dan 64
+            node, pengguna dapat mengisikan "128,64" pada form ini
+          </tab1>
+        </p>
+      </span>
+
+    </main>
+  </div>
+
+
+
+  <footer>
+    <%- include('../partials/footer'); %>
+  </footer>
+
+</body>
+
+</html>

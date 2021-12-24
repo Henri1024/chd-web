@@ -73,7 +73,7 @@
           prevalent_diabetes: parseFloat($("input[type='radio'][name='form-is-prevalent-diabetes']:checked").val()),
           systolic_blood_pressure: parseFloat($("#form-sistolic-bp").val()),
           diastolic_blood_pressure: parseFloat($("#form-diastolic-bp").val()),
-          body_mass_index: parseFloat($("#form-bmi").val()),
+          body_mass_index: parseFloat(parseFloat($("#form-bmi").val())),
           heart_rate: parseFloat($("#form-heart-rate").val()),
           glucose_levels: parseFloat($("#form-glucose-level").val()),
         };
@@ -81,7 +81,7 @@
 
         $.ajax({
           type: "POST",
-          url: "/predict",
+          url: "/admin/predict",
           data: JSON.stringify(body),
           dataType: "json",
           contentType: 'application/json',
@@ -162,16 +162,14 @@
 
       $('#form-heart-rate').val('');
 
-      // $('#form-height').val('');
-
-      $('#form-weight').val('');
+      $('#form-bmi').val('');
 
       $('#form-age').val('');
     }
   </script>
 
   <header>
-    <%- include('../partials/header'); %>
+    <%- include('../partials/header_admin'); %>
   </header>
 
   <div class="container">
@@ -311,22 +309,16 @@
         </div>
 
         <div class="form-group row">
-          <label for="form-heart-rate" class="col-sm-4 font-weight-bold">Rata-rata Detak Jantung (bpm) : </label>
-          <input name="form-heart-rate" type="number" class="form-control col-sm-7 mx-3" id="form-heart-rate"
-            step="0.01" placeholder="masukan rata-rata detak jantung" required>
-        </div>
-
-        <!-- <div class="form-group row">
-          <label for="form-height" class="col-sm-4 font-weight-bold">Tinggi (cm) : </label>
-          <input name="form-height" type="number" class="form-control col-sm-7 mx-3" id="form-height"
-            placeholder="masukan tinggi badan" required>
-        </div> -->
-
-        <div class="form-group row">
           <label for="form-bmi" class="col-sm-4 font-weight-bold">BMI (body mass index)</label>
           <input name="form-bmi" type="number" class="form-control col-sm-5 mx-3" id="form-bmi" step="0.01"
             placeholder="masukan BMI badan anda" required>
           <a href="https://hellosehat.com/health-tools/kalkulator-bmi/" class="col-sm-2">Hitung Disini</a>
+        </div>
+
+        <div class="form-group row">
+          <label for="form-heart-rate" class="col-sm-4 font-weight-bold">Rata-rata Detak Jantung (bpm) : </label>
+          <input name="form-heart-rate" type="number" class="form-control col-sm-7 mx-3" id="form-heart-rate"
+            step="0.01" step="0.01" placeholder="masukan rata-rata detak jantung" required>
         </div>
 
         <div class="form-group row">
