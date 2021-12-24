@@ -73,7 +73,7 @@
           prevalent_diabetes: parseFloat($("input[type='radio'][name='form-is-prevalent-diabetes']:checked").val()),
           systolic_blood_pressure: parseFloat($("#form-sistolic-bp").val()),
           diastolic_blood_pressure: parseFloat($("#form-diastolic-bp").val()),
-          body_mass_index: parseFloat(parseFloat(calculateBMI()).toFixed(2)),
+          body_mass_index: parseFloat($("#form-bmi").val()),
           heart_rate: parseFloat($("#form-heart-rate").val()),
           glucose_levels: parseFloat($("#form-glucose-level").val()),
         };
@@ -89,7 +89,7 @@
           success: function (data, textStatus, xhr) {
             var pred = data['prediction']
             var res_sigmoid = data['probability']
-            
+
             // check data pred id Nan
             if (isNaN(pred)) {
               alert("Failed to predict, please try again");
@@ -101,7 +101,7 @@
               $('#result-modal-description-true').text('Data yang dimasukan dapat diklasifikasikan sebagai BERPOTENSI mengidap Penyakit Jantung Koroner dengan tingkat keyakinan ' + floatToPercentage(parseFloat(res_sigmoid)));
               $("#result-modal-diagnosed").modal('show');
             } else {
-              $('#result-modal-description-false').text('Data yang dimasukan dapat diklasifikasikan sebagai TIDAK BERPOTENSI mengidap Penyakit Jantung Koroner dengan tingkat keyakinan ' + floatToPercentage(1-parseFloat(res_sigmoid)) );
+              $('#result-modal-description-false').text('Data yang dimasukan dapat diklasifikasikan sebagai TIDAK BERPOTENSI mengidap Penyakit Jantung Koroner dengan tingkat keyakinan ' + floatToPercentage(1 - parseFloat(res_sigmoid)));
               $("#result-modal-safe").modal('show');
             }
           },
@@ -162,7 +162,7 @@
 
       $('#form-heart-rate').val('');
 
-      $('#form-height').val('');
+      // $('#form-height').val('');
 
       $('#form-weight').val('');
 
@@ -279,7 +279,8 @@
 
         <div>
           <div class="form-group row">
-            <label for="form-num-of-cigs" class="col-sm-4 font-weight-bold">Rata-rata Konsumsi Rokok Perhari (pcs) : </label>
+            <label for="form-num-of-cigs" class="col-sm-4 font-weight-bold">Rata-rata Konsumsi Rokok Perhari (pcs) :
+            </label>
             <input name="form-num-of-cigs" type="number" class="form-control col-sm-7 mx-3" id="form-num-of-cigs"
               placeholder="Masukan rata-rata jumlah konsumsi rokok harian" disabled>
           </div>
@@ -287,44 +288,45 @@
 
         <div class="form-group row">
           <label for="form-cholesterol-level" class="col-sm-4 font-weight-bold">LDL kolesterol (mg/dL) : </label>
-          <input name="form-cholesterol-level" type="number" class="form-control col-sm-7 mx-3"
+          <input name="form-cholesterol-level" type="number" class="form-control col-sm-7 mx-3" step="0.01"
             id="form-cholesterol-level" placeholder="masukan nilai ldl kolesterol" required>
         </div>
 
         <div class="form-group row">
           <label for="form-sistolic-bp" class="col-sm-4 font-weight-bold">Tekanan Darah Sistolic (mmHg) : </label>
           <input name="form-sistolic-bp" type="number" class="form-control col-sm-7 mx-3" id="form-sistolic-bp"
-            placeholder="masukan nilai tekanan darah sistolik" required>
+            step="0.01" placeholder="masukan nilai tekanan darah sistolik" required>
         </div>
 
         <div class="form-group row">
           <label for="form-diastolic-bp" class="col-sm-4 font-weight-bold">Tekanan Darah Diastolik (mmHg) : </label>
           <input name="form-diastolic-bp" type="number" class="form-control col-sm-7 mx-3" id="form-diastolic-bp"
-            placeholder="masukan nilai tekanan darah diastolik" required>
+            step="0.01" placeholder="masukan nilai tekanan darah diastolik" required>
         </div>
 
         <div class="form-group row">
           <label for="form-glucose-level" class="col-sm-4 font-weight-bold">Tingkat Glukosa Darah (mg/dL) : </label>
           <input name="form-glucose-level" type="number" class="form-control col-sm-7 mx-3" id="form-glucose-level"
-            placeholder="masukan tingkat glukosa darah" required>
+            step="0.01" placeholder="masukan tingkat glukosa darah" required>
         </div>
 
         <div class="form-group row">
           <label for="form-heart-rate" class="col-sm-4 font-weight-bold">Rata-rata Detak Jantung (bpm) : </label>
           <input name="form-heart-rate" type="number" class="form-control col-sm-7 mx-3" id="form-heart-rate"
-            placeholder="masukan rata-rata detak jantung" required>
+            step="0.01" placeholder="masukan rata-rata detak jantung" required>
         </div>
 
-        <div class="form-group row">
+        <!-- <div class="form-group row">
           <label for="form-height" class="col-sm-4 font-weight-bold">Tinggi (cm) : </label>
           <input name="form-height" type="number" class="form-control col-sm-7 mx-3" id="form-height"
             placeholder="masukan tinggi badan" required>
-        </div>
+        </div> -->
 
         <div class="form-group row">
-          <label for="form-weight" class="col-sm-4 font-weight-bold">Berat (kg) : </label>
-          <input name="form-weight" type="number" class="form-control col-sm-7 mx-3" id="form-weight"
-            placeholder="masukan berat badan" required>
+          <label for="form-bmi" class="col-sm-4 font-weight-bold">BMI (body mass index)</label>
+          <input name="form-bmi" type="number" class="form-control col-sm-5 mx-3" id="form-bmi" step="0.01"
+            placeholder="masukan BMI badan anda" required>
+          <a href="https://hellosehat.com/health-tools/kalkulator-bmi/" class="col-sm-2">Hitung Disini</a>
         </div>
 
         <div class="form-group row">
@@ -376,7 +378,7 @@
               </button>
             </div>
             <div class="modal-body" id="result-modal-description-false">
-              
+
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>

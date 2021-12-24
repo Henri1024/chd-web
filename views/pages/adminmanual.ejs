@@ -27,174 +27,56 @@
       <p>
         <tab1>
           Aplikasi ini dibangun juga untuk melakukan pelatihan ulang model Back Propagation Neural Network yang telah
-          dibangun serta melakukan pengujian terhadap model baru. pengguna dapat menyediakan csv 16 kolom yang terdiri 1
-          kolom id, 14 kolom feature dan 1 kolom target.
+          dibangun serta melakukan pengujian terhadap model baru. penulis telah menyediakan dataset yang telah melalui
+          proses sampling sehingga dataset yang tersedia telah siap diproses. pengguna dapat memasukan jumlah split
+          ratio training-validation-testing, learning rate dan jumlah hidden layer beserta jumlah node per hidden
+          layernya
         </tab1>
       </p>
       <span>
         <p></p>
       </span>
 
-      <h5 class="mt-3 font-weight-bold font-weight-bold">Kolom Kolom yang dibutuhkan</h5>
+      <h5 class="my-3 font-weight-bold font-weight-bold">Input yang dibutuhkan</h5>
       <span>
-        <h6 class="font-weight-bold">1. ID ("id")</h6>
+        <h6 class="font-weight-bold">1. Split Testing - Training Ratio</h6>
         <p>
           <tab1>
-            kolom "id" merupakan kolom pertama yang akan menjadi idenditas unik dari record data yang ditampilkan, value
-            dari kolom ini tidak akan digunakan dalam melakukan pelatihan
+            form ini merupakan form input decimal yang menerima perbandingan jumlah data testing terhadap data training
           </tab1>
         </p>
       </span>
 
       <span>
-        <h6 class="font-weight-bold">2. Usia ("age")</h6>
+        <h6 class="font-weight-bold">2. Split Validation - Training Ratio</h6>
         <p>
           <tab1>
-            kolom "age" merupakan kolom feature pertama yang bernilai continuous mulai dari 1 hingga seterusnya.
+            form ini merupakan form input decimal yang menerima perbandingan jumlah data Validation terhadap data
+            training setelah dipisahkan dari data testing
           </tab1>
         </p>
       </span>
 
       <span>
-        <h6 class="font-weight-bold">3. Jenis Kelamin ("sex")</h6>
+        <h6 class="font-weight-bold">3. Learning Rate</h6>
         <p>
           <tab1>
-            kolom "sex" merupakan kolom feature kedua yang bernilai nominal binary [1, 0], dimana 1 mewakili jenis
-            kelamin laki-laki dan 0 mewakili jenis kelamin perempuan.
+            Learning rate adalah laju pembelajaran pada fungsi optimizer yang digunakan
           </tab1>
         </p>
       </span>
 
       <span>
-        <h6 class="font-weight-bold">4. Perokok Aktif ("is_smoking")</h6>
+        <h6 class="font-weight-bold">4. Hidden Layer</h6>
         <p>
           <tab1>
-            kolom "is_smoking" merupakan kolom feature ketiga yang bernilai nominal binary [1, 0], dimana 1 mewakili
-            nilai perokok dan 0 mewakili bukan perokok.
+            form hidden layer berisi input text yang akan menerima jumlah hidden layer dan node per hidden layer yang
+            diinginkan, pengguna dapat menentukan jumlah hidden layer yang diinginkan dengan memisahkannya dengan tanda
+            koma (,). sebagai contoh apabila pengguna ingin menambah 2 hidden layer dengan masing-masing 128 dan 64
+            node, pengguna dapat mengisikan "128,64" pada form ini
           </tab1>
         </p>
       </span>
-
-      <span>
-        <h6 class="font-weight-bold">5. Jumlah Rokok Harian ("cigsPerDay")</h6>
-        <p>
-          <tab1>
-            kolom "cigsPerDay" merupakan kolom feature keempat yang bernilai continuous mulai dari 1 hingga seterusnya
-            yang mewakili jumlah rata rata rokok harian, apabila user bukan merokok dapat diberikan nilai 0.
-          </tab1>
-        </p>
-      </span>
-
-      <span>
-        <h6 class="font-weight-bold">6. Konsumsi Obat Tekanan Darah ("BPMeds")</h6>
-        <p>
-          <tab1>
-            kolom "BPMeds" merupakan kolom feature kelima yang bernilai nominal binary [1, 0], dimana 1 mewakili
-            nilai mengkonsumsi obat tekanan darah dan 0 mewakili tidak mengkonsumsi obat tekanan darah.
-          </tab1>
-        </p>
-      </span>
-
-      <span>
-        <h6 class="font-weight-bold">7. Riwayat Penyakit Stroke ("prevalentStroke")</h6>
-        <p>
-          <tab1>
-            kolom "prevalentStroke" merupakan kolom feature keenam yang bernilai nominal binary [1, 0], dimana 1
-            memiliki riwayat penyakit stroke dan 0 mewakili tidak memiliki riwayat penyakit stroke.
-          </tab1>
-        </p>
-      </span>
-
-      <span>
-        <h6 class="font-weight-bold">8. Riwayat Penyakit Hipertensi ("prevalentHyp")</h6>
-        <p>
-          <tab1>
-            kolom "prevalentHyp" merupakan kolom feature ketujuh yang bernilai nominal binary [1, 0], dimana 1
-            memiliki riwayat penyakit hipertensi dan 0 mewakili tidak memiliki riwayat penyakit hipertensi.
-          </tab1>
-        </p>
-      </span>
-
-      <span>
-        <h6 class="font-weight-bold">9. Riwayat Penyakit Diabetes ("diabetes")</h6>
-        <p>
-          <tab1>
-            kolom "diabetes" merupakan kolom feature kedelapan yang bernilai continuous mulai dari 1 hingga seterusnya
-            yang mewakili jumlah , apabila user bukan merokok dapat diberikan nilai 0.
-          </tab1>
-        </p>
-      </span>
-
-      <span>
-        <h6 class="font-weight-bold">10. LDL kolesterol ("totChol")</h6>
-        <p>
-          <tab1>
-            kolom "totChol" merupakan kolom feature kesembilan yang bernilai continuous mulai dari 1 hingga seterusnya
-            yang mewakili nilai LDL kolesterol.
-          </tab1>
-        </p>
-      </span>
-
-      <span>
-        <h6 class="font-weight-bold">11. Tekanan Darah Sistolik ("sysBP")</h6>
-        <p>
-          <tab1>
-            kolom "sysBP" merupakan kolom feature kesembilan yang bernilai continuous mulai dari 1 hingga seterusnya
-            yang mewakili nilai tekanan darah sistolik.
-          </tab1>
-        </p>
-      </span>
-
-      <span>
-        <h6 class="font-weight-bold">12. Tekanan Darah Diastolik ("diaBP")</h6>
-        <p>
-          <tab1>
-            kolom "diaBP" merupakan kolom feature kesembilan yang bernilai continuous mulai dari 1 hingga seterusnya
-            yang mewakili nilai tekanan darah diastolik.
-          </tab1>
-        </p>
-      </span>
-
-      <span>
-        <h6 class="font-weight-bold">13. Glukosa Darah ("glucose")</h6>
-        <p>
-          <tab1>
-            kolom "glucose" merupakan kolom feature kesembilan yang bernilai continuous mulai dari 1 hingga seterusnya
-            yang mewakili nilai gula darah.
-          </tab1>
-        </p>
-      </span>
-
-      <span>
-        <h6 class="font-weight-bold">14. Rata-rata Detak Jantung ("heartRate")</h6>
-        <p>
-          <tab1>
-            kolom "heartRate" merupakan kolom feature kesembilan yang bernilai continuous mulai dari 1 hingga seterusnya
-            yang mewakili nilai rata-rata detak jantung permenit.
-          </tab1>
-        </p>
-      </span>
-
-      <span>
-        <h6 class="font-weight-bold">15. BMI ("BMI")</h6>
-        <p>
-          <tab1>
-            kolom "BMI" merupakan kolom feature kesembilan yang bernilai continuous mulai dari 1 hingga seterusnya
-            yang mewakili nilai bmi(body mass index) dari user yang diinput.
-          </tab1>
-        </p>
-      </span>
-
-      <span>
-        <h6 class="font-weight-bold">16. Target ("TenYearCHD")</h6>
-        <p>
-          <tab1>
-            kolom "TenYearCHD" merupakan kolom feature kesembilan yang bernilai nominal binary [1, 0], dimana 1
-            memiliki potensi menderita penyakit jantung koroner dan 0 mewakili tidak memiliki potensi menderita penyakit jantung koroner.
-          </tab1>
-        </p>
-      </span>
-
 
     </main>
   </div>

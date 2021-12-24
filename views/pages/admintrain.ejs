@@ -25,64 +25,21 @@
       $('#checkbox-use-provided-dataset').change(function () {
         if ($('#checkbox-use-provided-dataset').is(':checked')) {
           loadCsvToTable('/csv/sample.csv');
+          $('th').addClass('mx-2')
 
           $('#user-csv-input').val(null);
 
         }
       });
 
-      // listener for id user-csv-input user input file
-      $('#user-csv-input').change(function () {
-        // get the file name
-        var fileName = $(this).val();
-        // replace the "Choose a file" label
-        $(this).next('.form-check-label').html(fileName);
-        // load the csv file to the table
-
-        // upload the csv file to the server
-        var formData = new FormData();
-        formData.append('file', this.files[0]);
-        $.ajax({
-          url: '/admin/uploadcsv',
-          type: 'POST',
-          data: formData,
-          processData: false,
-          contentType: false,
-          success: function (data) {
-            loadCsvToTable('/csv/tmp.csv');
-            $('#checkbox-use-provided-dataset').prop('checked', false);
-
-            $.ajax({
-              url: 'http://localhost:9999/tmp/upload',
-              type: 'POST',
-              data: formData,
-              processData: false,
-              contentType: false,
-              success: function (data) {
-                alert('sukses melakukan upload CSV ');
-              },
-              fail: function (data) {
-                alert('gagal melakukan upload CSV ');
-              }
-            });
-
-
-          },
-          fail: function (data) {
-            alert('gagal melakukan update CSV');
-          }
-        });
-
-        // loadCsvToTable(fileName);
-      });
-
-
       $('#main-prediction-form').submit(function (e) {
 
         e.preventDefault();
         var body = {
-          epochs: $('#form-epoch').val(),
-          split_rate: $('#form-split-rate').val(),
+          split_rate_training_testing: $('#form-split-rate-training-testing').val(),
+          split_rate_training_val: $('#form-split-rate-training-val').val(),
+          hidden_layer: $('#form-hidden-layer').val(),
+          learning_rate: $('#form-learning-rate').val(),
           random_state: 128,
           batch_size: 32
         }
@@ -94,7 +51,11 @@
           contentType: 'application/json',
           encode: true,
           success: function (data) {
-            alert('Sukses melakukan training dengan jumlah epoch : ' + body.epochs + ' dan split rate: ' + body.split_rate + ' dengan hasil : ' + JSON.stringify(data));
+            // console.log(type(data))
+            data = JSON.parse(JSON.stringify(data))
+            console.log(typeof (data))
+            console.log(data)
+            alert('Sukses melakukan training  dengan hasil : \nAccuracy : ' + data['message']['accuracy'].toFixed(2) + '\nRecall : ' + data['message']['recall'].toFixed(2) + '\nPrecision : ' + data['message']['precision'].toFixed(2));
           },
           fail: function (data) {
             alert('Gagal Melakukan training dengan data yang disediakan');
@@ -107,6 +68,7 @@
     function loadCsvToTable(source) {
       if (source == '') {
         $('#csv-table').CSVToTable('/csv/sample.csv');
+        $('th').addClass('mx-2')
       } else {
         $('#csv-table').CSVToTable(source);
       }
@@ -126,28 +88,33 @@
 
       <form id="main-prediction-form">
 
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="checkbox-use-provided-dataset" checked>
-          <label class="form-check-label" for="checkbox-use-provided-dataset">
-            Gunakan Dataset Yang Disediakan
+        <div class="form-group">
+          <label for="form-split-rate-training-testing" class="col-sm-4 font-weight-bold">Split Testing - Training Ratio
+            :
           </label>
-        </div>
-
-        <div class="form-group mt-3">
-          <label for="user-csv-input">Masukan CSV anda</label>
-          <input type="file" class="form-control-file" id="user-csv-input">
+          <input name="form-split-rate-training-testing" step="0.01" type="number" class="form-control col-sm-7 mx-3"
+            id="form-split-rate-training-testing" placeholder="masukan nilai split ratio yang diinginkan" required>
         </div>
 
         <div class="form-group">
-          <label for="form-epoch" class="col-sm-4 font-weight-bold">Epochs (Maksimal 30 epoch) : </label>
-          <input name="form-epoch" type="number" class="form-control col-sm-7 mx-3" id="form-epoch"
-            placeholder="masukan jumlah epoch yang diinginkan" required>
+          <label for="form-split-rate-training-val" class="col-sm-4 font-weight-bold">Split Validation - Training Ratio
+            :
+          </label>
+          <input name="form-split-rate-training-val" step="0.01" type="number" class="form-control col-sm-7 mx-3"
+            id="form-split-rate-training-val" placeholder="masukan nilai split ratio yang diinginkan" required>
         </div>
 
         <div class="form-group">
-          <label for="form-split-rate" class="col-sm-4 font-weight-bold">Split Validation Ratio : </label>
-          <input name="form-split-rate" step="0.01" type="number" class="form-control col-sm-7 mx-3"
-            id="form-split-rate" placeholder="masukan nilai split ratio yang diinginkan" required>
+          <label for="form-learning-rate" class="col-sm-4 font-weight-bold">Learning Rate : </label>
+          <input name="form-learning-rate" step="0.00001" type="number" class="form-control col-sm-7 mx-3"
+            id="form-learning-rate" placeholder="masukan nilai learning rate yang diinginkan" required>
+        </div>
+
+        <div class="form-group">
+          <label for="form-hidden-layer" class="col-sm-4 font-weight-bold">Hidden Layer (pisahkan antar layer dengan
+            koma): </label>
+          <input name="form-hidden-layer" type="text" class="form-control col-sm-7 mx-3" id="form-hidden-layer"
+            placeholder="masukan nilai hidden layer yang diinginkan" required>
         </div>
 
         <div class="form-check">
@@ -163,7 +130,7 @@
       </form>
     </div>
 
-    <div class="text-center">
+    <div class="container">
 
       <div id="csv-table"></div>
 
