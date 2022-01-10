@@ -26,6 +26,40 @@
         }
       });
 
+      $('input[type=radio]').click(function () {
+        if (this.id == "form-is-know-ldl-cholestrol-yes") {
+          $('#form-cholesterol-level').val('');
+          $('#form-cholesterol-level').removeAttr('disabled');
+          $('#form-cholesterol-level').attr("required");
+        }
+      });
+
+
+      $('input[type=radio]').click(function () {
+        if (this.id == "form-is-know-ldl-cholestrol-no") {
+          $('#form-cholesterol-level').attr("required", "");
+          $('#form-cholesterol-level').val('');
+          $('#form-cholesterol-level').attr('disabled', 'disabled');
+        }
+      });
+
+      $('input[type=radio]').click(function () {
+        if (this.id == "form-is-know-glucode-level-yes") {
+          $('#form-glucose-level').val('');
+          $('#form-glucose-level').removeAttr('disabled');
+          $('#form-glucose-level').attr("required");
+        }
+      });
+
+
+      $('input[type=radio]').click(function () {
+        if (this.id == "form-is-know-glucode-level-no") {
+          $('#form-glucose-level').attr("required", "");
+          $('#form-glucose-level').val('');
+          $('#form-glucose-level').attr('disabled', 'disabled');
+        }
+      });
+
 
       $("#main-prediction-form").submit(function (e) {
 
@@ -61,6 +95,16 @@
           return false;
         }
 
+        var glucose_levels = parseFloat($("#form-glucose-level").val())
+        if (Number.isNaN(glucose_levels)) {
+          glucose_levels = 140.0
+        }
+
+        var cholesterol_levels = parseFloat($("#form-cholesterol-level").val())
+        if (Number.isNaN(cholesterol_levels)) {
+          cholesterol_levels = 200.0
+        }
+
         var body = {
           age: parseFloat($("#form-age").val()),
           sex: parseFloat($("input[type='radio'][name='form-gender']:checked").val()),
@@ -69,13 +113,13 @@
           blood_pressure_med_consumption: parseFloat($("input[type='radio'][name='form-is-consume-bpmed']:checked").val()),
           prevalent_stroke: parseFloat($("input[type='radio'][name='form-is-prevalent-stroke']:checked").val()),
           prevalent_hypertension: parseFloat($("input[type='radio'][name='form-is-prevalent-hypertension']:checked").val()),
-          cholesterol_levels: parseFloat($("#form-cholesterol-level").val()),
+          cholesterol_levels: cholesterol_levels,
           prevalent_diabetes: parseFloat($("input[type='radio'][name='form-is-prevalent-diabetes']:checked").val()),
           systolic_blood_pressure: parseFloat($("#form-sistolic-bp").val()),
           diastolic_blood_pressure: parseFloat($("#form-diastolic-bp").val()),
           body_mass_index: parseFloat($("#form-bmi").val()),
           heart_rate: parseFloat($("#form-heart-rate").val()),
-          glucose_levels: parseFloat($("#form-glucose-level").val()),
+          glucose_levels: glucose_levels,
         };
 
 
@@ -147,6 +191,12 @@
 
       $('#form-is-smoking-yes').prop('checked', false);
       $('#form-is-smoking-no').prop('checked', false);
+
+      $('#form-is-know-ldl-cholestrol-yes').prop('checked', false);
+      $('#form-is-know-ldl-cholestrol-no').prop('checked', false);
+
+      $('#form-is-know-glucode-level-yes').prop('checked', false);
+      $('#form-is-know-glucode-level-no').prop('checked', false);
 
       $('#form-num-of-cigs').val('');
 
@@ -287,9 +337,50 @@
         </div>
 
         <div class="form-group row">
+          <label for="form-is-know-ldl-cholestrol" class="col-sm-4 font-weight-bold">Mengetahui LDL Kolesterol :
+          </label>
+          <div class="col-sm-7 mx-3">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="form-is-know-ldl-cholestrol"
+                id="form-is-know-ldl-cholestrol-yes" value="1">
+              <label class="form-check-label mr-5" for="form-is-know-ldl-cholestrol-yes">Ya</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="form-is-know-ldl-cholestrol"
+                id="form-is-know-ldl-cholestrol-no" value="0">
+              <label class="form-check-label" for="form-is-know-ldl-cholestrol-no">Tidak</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
           <label for="form-cholesterol-level" class="col-sm-4 font-weight-bold">LDL kolesterol (mg/dL) : </label>
           <input name="form-cholesterol-level" type="number" class="form-control col-sm-7 mx-3" step="0.01"
-            id="form-cholesterol-level" placeholder="masukan nilai ldl kolesterol" required>
+            id="form-cholesterol-level" placeholder="masukan nilai ldl kolesterol" disabled>
+        </div>
+
+        <div class="form-group row">
+          <label for="form-is-know-glucode-level" class="col-sm-4 font-weight-bold">Mengetahui Glukosa Darah :
+          </label>
+          <div class="col-sm-7 mx-3">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="form-is-know-glucode-level"
+                id="form-is-know-glucode-level-yes" value="1">
+              <label class="form-check-label mr-5" for="form-is-know-glucode-level-yes">Ya</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="form-is-know-glucode-level"
+                id="form-is-know-glucode-level-no" value="0">
+              <label class="form-check-label" for="form-is-know-glucode-level-no">Tidak</label>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="form-group row">
+          <label for="form-glucose-level" class="col-sm-4 font-weight-bold">Tingkat Glukosa Darah (mg/dL) : </label>
+          <input name="form-glucose-level" type="number" class="form-control col-sm-7 mx-3" id="form-glucose-level"
+            step="0.01" placeholder="masukan tingkat glukosa darah" disabled>
         </div>
 
         <div class="form-group row">
@@ -302,12 +393,6 @@
           <label for="form-diastolic-bp" class="col-sm-4 font-weight-bold">Tekanan Darah Diastolik (mmHg) : </label>
           <input name="form-diastolic-bp" type="number" class="form-control col-sm-7 mx-3" id="form-diastolic-bp"
             step="0.01" placeholder="masukan nilai tekanan darah diastolik" required>
-        </div>
-
-        <div class="form-group row">
-          <label for="form-glucose-level" class="col-sm-4 font-weight-bold">Tingkat Glukosa Darah (mg/dL) : </label>
-          <input name="form-glucose-level" type="number" class="form-control col-sm-7 mx-3" id="form-glucose-level"
-            step="0.01" placeholder="masukan tingkat glukosa darah" required>
         </div>
 
         <div class="form-group row">
