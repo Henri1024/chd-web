@@ -97,11 +97,22 @@
         }
 
         var glucose_levels = parseFloat($("#form-glucose-level").val())
+        var cholesterol_levels = parseFloat($("#form-cholesterol-level").val())
+
+
+        if (Number.isNaN(glucose_levels) && Number.isNaN(cholesterol_levels)) {
+          alert("Anda tidak mengisi glukosa dan LDL kolestrol anda, sistem akan mengisi nilai ini dengan nilai normal")
+        }
+        else if (Number.isNaN(glucose_levels)) {
+          alert("Anda tidak mengisi glukosa anda, sistem akan mengisi nilai ini dengan nilai normal")
+        }
+        else if (Number.isNaN(cholesterol_levels)) {
+          alert("Anda tidak mengisi LDL kolestrol anda, sistem akan mengisi nilai ini dengan nilai normal")
+        }
+
         if (Number.isNaN(glucose_levels)) {
           glucose_levels = 140.0
         }
-
-        var cholesterol_levels = parseFloat($("#form-cholesterol-level").val())
         if (Number.isNaN(cholesterol_levels)) {
           cholesterol_levels = 200.0
         }
@@ -119,11 +130,12 @@
           prevalent_diabetes: parseFloat($("input[type='radio'][name='form-is-prevalent-diabetes']:checked").val()),
           systolic_blood_pressure: parseFloat($("#form-sistolic-bp").val()),
           diastolic_blood_pressure: parseFloat($("#form-diastolic-bp").val()),
-          body_mass_index: parseFloat(parseFloat($("#form-bmi").val())),
+          body_mass_index: parseFloat($("#form-bmi").val()),
           heart_rate: parseFloat($("#form-heart-rate").val()),
           glucose_levels: glucose_levels,
         };
 
+        console.log(body)
 
         $.ajax({
           type: "POST",

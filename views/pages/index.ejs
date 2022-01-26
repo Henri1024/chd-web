@@ -96,11 +96,22 @@
         }
 
         var glucose_levels = parseFloat($("#form-glucose-level").val())
+        var cholesterol_levels = parseFloat($("#form-cholesterol-level").val())
+
+
+        if (Number.isNaN(glucose_levels) && Number.isNaN(cholesterol_levels)) {
+          alert("Anda tidak mengisi glukosa dan LDL kolestrol anda, sistem akan mengisi nilai ini dengan nilai normal")
+        }
+        else if (Number.isNaN(glucose_levels)) {
+          alert("Anda tidak mengisi glukosa anda, sistem akan mengisi nilai ini dengan nilai normal")
+        }
+        else if (Number.isNaN(cholesterol_levels)) {
+          alert("Anda tidak mengisi LDL kolestrol anda, sistem akan mengisi nilai ini dengan nilai normal")
+        }
+
         if (Number.isNaN(glucose_levels)) {
           glucose_levels = 140.0
         }
-
-        var cholesterol_levels = parseFloat($("#form-cholesterol-level").val())
         if (Number.isNaN(cholesterol_levels)) {
           cholesterol_levels = 200.0
         }
